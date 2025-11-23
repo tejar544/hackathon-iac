@@ -1,23 +1,38 @@
-variable "client" {}
+variable "client" {
+  description = "Name prefix for Azure resources"
+  type        = string
+}
 
-variable "size" {
-  type = number
+variable "disk_size_gb" {
+  description = "Azure disk size in GB"
+  type        = number
 }
 
 variable "disk_type" {
-  description = "Equivalent to EBS volume type"
-  default     = "Standard_LRS" # options: Premium_LRS, StandardSSD_LRS
+  description = "Azure managed disk type"
+  type        = string
+  default     = "Standard_LRS"
+  # valid Azure options:
+  # Standard_LRS
+  # StandardSSD_LRS
+  # Premium_LRS
+  # UltraSSD_LRS
 }
 
-variable "iops" {
-  type    = number
-  default = 0
+variable "disk_iops" {
+  description = "IOPS (only for Premium/Ultra disks)"
+  type        = number
+  default     = null
 }
 
-variable "snapshot_id" {
-  default = ""
+variable "source_resource_id" {
+  description = "Snapshot or disk ID (Azure import)"
+  type        = string
+  default     = null
 }
 
-variable "kms_key_id" {
-  default = ""
+variable "disk_encryption_set_id" {
+  description = "Azure CMK encryption (Disk Encryption Set)"
+  type        = string
+  default     = null
 }
