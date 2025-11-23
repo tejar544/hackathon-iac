@@ -1,74 +1,48 @@
+variable "resource_group_name" {}
+variable "vnet_name" {}
+variable "subnet_name" {}
 
-variable "launch_configuration"{
-  type = string
+variable "client" {}
+variable "environment" {}
+
+variable "vm_size" {
+  default = "Standard_DS1_v2"
 }
-# # variable "availability_zones" {
-# #   description = "availability zones"
-# #   type        = set(string)
-# # }
 
-# # variable "load_balancers" {
-# #   description = "load_balancer"
-# #   type        = string
-# # }
-
-#  variable "asg_policy_name"{
-#    type = string
-#  }
-#  variable"scaling_adjustment"{
-#    type = number
-#  }
-#  variable "adjustment_type"{
-#    type = string
-#  }
-# #  variable "cooldown"{
-# #    type = number
-# #  }
-# #  variable "policy_type"{
-# #    type = string
-# #  }
- 
-#  variable "name"{
-#    type = string
-#  }
-variable "min_size"{
-  type= number
-}
-variable "max_size"{
+variable "desired_capacity" {
   type = number
 }
-variable "desired_capacity"{
-  type = number
-}
-# # variable"force_delete"{
-# #   type = bool
-# # }
-variable "health_check_type"{
-  type = string
-}
-variable "health_check_grace_period"{
-  type = number
-}
-variable "wait_for_capacity_timeout"{
-  type = number
-}
-# variable "autoscaling_group_name"{
-#    type = string
-#  }
 
- variable "target_group"{
-   type = set(string)
-   default = "test"
- }
- 
-# # variable "client"{
-# #   type = string
-# # }
-# variable "environment"{
-#   type = string
-# }
-# variable "create_asg" {
-#   description = "Controls if ASG should be created"
-#   type        = bool
-# }
+variable "admin_username" {
+  default = "azureuser"
+}
 
+variable "ssh_public_key" {}
+
+variable "image_publisher" {
+  default = "Canonical"
+}
+
+variable "image_offer" {
+  default = "UbuntuServer"
+}
+
+variable "image_sku" {
+  default = "18.04-LTS"
+}
+
+variable "image_version" {
+  default = "latest"
+}
+
+variable "os_disk_type" {
+  default = "Standard_LRS"
+}
+
+variable "upgrade_mode" {
+  default = "Manual"
+}
+
+variable "name_tag" {
+  default = "fayh"
+}
