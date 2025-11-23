@@ -1,52 +1,60 @@
-
-data "aws_vpc" "vpc" {
- filter {
-    name   = "tag:Environment"
-    values = ["prod"]
-}
+data "azurerm_resource_group" "rg" {
+  name = var.resource_group_name
 }
 
-data "aws_subnet_ids" "subnet_asg" {
-  vpc_id = data.aws_vpc.vpc.id
-  filter {
-    name   = "tag:Name"
-    values = ["*-compute"]
-}
+data "azurerm_virtual_network" "vnet" {
+  name                = var.vnet_name
+  resource_group_name = data.azurerm_resource_group.rg.name
 }
 
-# resource "aws_autoscaling_policy" "asg-policy" {
-#   name                   = var.asg_policy_name
-#   scaling_adjustment     = var.scaling_adjustment
-#   adjustment_type        = var.adjustment_type
-#   cooldown               = var.cooldown
-#   policy_type            = var.policy_type
-#   autoscaling_group_name = aws_autoscaling_group.asg.name
-# }
+data "azurerm_subnet" "subnet" {
+  name                 = var.subnet_name
+  virtual_network_name = data.azurerm_virtual_network.vnet.name
+  resource_group_name  = data.azurerm_resource_group.rg.name
+}
 
-resource "aws_autoscaling_group" "asg" {
-     #for_each = var.create_asg ? [1] : []
+resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
+  name                = "${var.client}-${var.environment}-vmss"
+  resource_group_name = data.azurerm_resource_group.rg.name
+  location            = data.azurerm_resource_group.rg.location
 
-  launch_configuration      = var.launch_configuration
-  name                      = "${var.client}-${var.environment}-asg"
-  vpc_zone_identifier       = data.aws_subnet_ids.subnet_asg.ids
-  #availability_zones        = var.availability_zones
-  #load_balancers           = "${module.elb.elb_name}"
-  min_size                  = var.min_size
-  max_size                  = var.max_size
-  wait_for_capacity_timeout = var.wait_for_capacity_timeout
-  health_check_grace_period = var.health_check_grace_period
-  health_check_type         = var.health_check_type
-  desired_capacity          = var.desired_capacity
-  # force_delete              = var.force_delete
-  target_group_arns         = var.target_group 
- 
-   lifecycle {
-    create_before_destroy = true
-  }
-tag {
-    key              = "Name"
-    value               = "fayh"
-    propagate_at_launch = true
+  sku                 = var.vm_size
+  instances           = var.desired_capacity   # replaces ASG desired_capacity
+
+  admin_username      = "azureuser"
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
   }
 
+  admin_ssh_key {
+    username   = "azureuser"
+    public_key = file(var.ssh_public_key)
+  }
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  network_interface {
+    name    = "${var.client}-nic"
+    primary = true
+
+    ip_configuration {
+      name      = "internal"
+      subnet_id = data.azurerm_subnet.subnet.id
+      primary   = true
+    }
+  }
+
+  upgrade_policy_mode = "Manual"
+
+  tags = {
+    Environment = var.environment
+    Name        = "fayh"
+  }
 }
