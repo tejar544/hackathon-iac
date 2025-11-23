@@ -1,7 +1,7 @@
+client = "continuum"
 
- availability_zone            = ""
-  size                        =    
-  multi_attach_enabled        = 
-  outpost_arn                 = ""
-  type                        = ""
-  kms_key_id                  = ""
+size       = 20
+disk_type  = "Standard_LRS"
+iops       = 0
+snapshot_id = ""
+kms_key_id  = ""
