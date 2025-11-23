@@ -1,29 +1,23 @@
+variable "client" {}
 
-variable  "availability_zone"{
-    type = string
-}
 variable "size" {
-    type = number
+  type = number
 }
-variable "encrypted"{
-    type = bool
+
+variable "disk_type" {
+  description = "Equivalent to EBS volume type"
+  default     = "Standard_LRS" # options: Premium_LRS, StandardSSD_LRS
 }
-variable "iops"{
-    
-    type = number 
+
+variable "iops" {
+  type    = number
+  default = 0
 }
-variable "multi_attach_enabled" {
-    type =bool
+
+variable "snapshot_id" {
+  default = ""
 }
- variable "snapshot_id"{
-     type = string
- }
- variable "outpost_arn"{
-     type = string
- }
- variable "type"{
-     type = string
- }
- variable "kms_key_id"{
-     type = string
- }
+
+variable "kms_key_id" {
+  default = ""
+}
