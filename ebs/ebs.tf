@@ -1,25 +1,20 @@
+resource "azurerm_managed_disk" "disk" {
+  name                 = "${var.client}-data-disk"
+  location             = data.azurerm_resource_group.rg.location
+  resource_group_name  = data.azurerm_resource_group.rg.name
 
+  storage_account_type = var.disk_type
+  create_option        = var.snapshot_id != "" ? "Import" : "Empty"
 
-resource "aws_ebs_volume" "EBS" {
-  availability_zone     = var.availability_zone
-  size                  = var.size  
-  encrypted             = var.encrypted 
-  iops                  = var.type == "io1" ? var.iops :"0"
-  multi_attach_enabled  = var.multi_attach_enabled 
-  #snapshot_id          = var.snapshot_id
-  outpost_arn           = var.outpost_arn 
-  type                  = var.type 
-  kms_key_id            = var.kms_key_id 
+  disk_size_gb         = var.size
+
+  # IOPS only applies to premium types
+  disk_iops_read_write = var.disk_type == "Premium_P1" ? var.iops : null
+
+  # Encryption
+  disk_encryption_set_id = var.kms_key_id != "" ? var.kms_key_id : null
+
   tags = {
-    Name = "continuum-EBS"
+    Name = "${var.client}-disk"
   }
-
-
- #resource"aws_volume_attachment" "insta_vol"{
-
-  # device_name   ="/dev/sdv"
-  # volume_id     = aws_ebs_volume.data-vol.id
-  # instance_id   = aws_instance.as_conti.id
-
- #}
 }
