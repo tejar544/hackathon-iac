@@ -1,20 +1,17 @@
 
 
-  launch_configuration        = ""
-  load_balancers              = []
-  availability_zones          = [""]
-  asg_policy_name             = ""
-  # scaling_adjustment          = 
-  adjustment_type             = ""
-  # cooldown                    = 
-  policy_type                 = ""
-  name                        = "fayh"
-  # min_size                    = 
-  # max_size                    = 
-  #desired_capacity           = 
-  # wait_for_capacity_timeout   = 
-  # health_check_grace_period   = 
-  health_check_type           = ""
-  # desired_capacity            = 
-  # force_delete                = 
-  vpc_id                      = ""
+resource_group_name = "rg-prod"
+vnet_name           = "prod-vnet"
+subnet_name         = "prod-subnet"
+
+client      = "fayh"
+environment = "prod"
+
+vm_size          = "Standard_DS1_v2"
+desired_capacity = 2
+
+ssh_public_key = "~/.ssh/id_rsa.pub"
+
+upgrade_mode = "Automatic"
+
+name_tag = "fayh"
